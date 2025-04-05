@@ -42,8 +42,8 @@ func TaskShortDisplay(t task.Task) string {
 }
 
 func TaskVerboseDisplay(t task.Task) string {
-	fstr := "%v)\tName: %v" + "\n" + "\tStatus: %v"
-	return fmt.Sprintf(fstr, t.Id, t.Description, t.Status)
+	fstr := "%v)\tName: %v" + "\n\tStatus: %v" + "\n\tCreated: %v" + "\n\tLast Updated: %v"
+	return fmt.Sprintf(fstr, t.Id, t.Description, t.Status, t.CreatedAt.Format("2006-01-02"), t.UpdatedAt.Format("2006-01-02"))
 }
 
 func (a *Application) StringTasksShort(tsl []task.TaskId) string {

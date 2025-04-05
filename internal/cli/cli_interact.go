@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/ursaru-tudor/task-cli/internal/task"
@@ -15,16 +16,49 @@ func (a *Application) ParseList() {
 	fmt.Print(a.StringTasksLong(a.myTasks.GetTasksByState(tsf)))
 }
 
-func (a *Application) ParseAdd() {
-	// Will need to implement code
-	if len(os.Args) > 3 {
-		log.Fatalf("Too many arguments for verb add")
-		fmt.Printf("Error: Too many arguments")
+func ManageArgumentCount(desiredArgNumber int, verb string, title bool) {
+	if len(os.Args) > desiredArgNumber+1 {
+		fmt.Printf("Too many arguments for verb %s.\n", verb)
+		if title {
+			fmt.Printf("If you want to input a title with spaces, make sure to insert \" before and after the text.")
+		}
+		fmt.Printf("\n")
+		log.Fatalf("Error: Too many arguments for %s.\n", verb)
 	}
+	if len(os.Args) < desiredArgNumber+1 {
+		fmt.Printf("Too few arguments for verb %s. You must provide the title of the task as a third argument.\n", verb)
+		log.Fatalf("Error: Too few arguments for %s.\n", verb)
+	}
+}
+
+func ManageInvalidId(verb, argument string) {
+	fmt.Printf("You have provided an invalid id (%s) to %s.\n", argument, verb)
+	log.Fatalf("Error: Invalid TaskId %s for %s.\n", argument, verb)
+}
+
+func (a *Application) ParseAdd() {
+	ManageArgumentCount(2, "add", true)
 	title := os.Args[2]
-	a.myTasks.AddTask(task.CreateTask(title))
+	a.Add(title)
 	fmt.Println("Successfuly created new task.")
 	task.WriteToFile(a.myTasks, a.savefile)
+}
+
+func (a *Application) ParseInfo() {
+	ManageArgumentCount(2, "info", false)
+	numId, err := strconv.Atoi(os.Args[2])
+	id := task.TaskId(numId)
+
+	if err != nil {
+		fmt.Printf("Invalid TaskId format.\n")
+		log.Fatalf("Invalid TaskId format\n")
+	}
+
+	if !a.myTasks.CheckId(id) {
+		ManageInvalidId("info", os.Args[2])
+	}
+
+	fmt.Println(TaskVerboseDisplay(*a.myTasks.GetTask(id)))
 }
 
 func (a *Application) ParseArguments() {
@@ -39,6 +73,8 @@ func (a *Application) ParseArguments() {
 		a.ParseList()
 	case "add":
 		a.ParseAdd()
+	case "info":
+		a.ParseInfo()
 	default:
 		fmt.Printf("You have included an invalid verb. For information on correct usage, check with the -h or --help flag\n")
 		log.Fatalf("Invalid verb provided\n")

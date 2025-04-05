@@ -66,3 +66,8 @@ func (tlist *TaskList) GetTask(id TaskId) *Task {
 	index := tlist.hashLocation[id]
 	return &tlist.taskSlice[index]
 }
+
+func (tlist TaskList) CheckId(id TaskId) bool {
+	_, ok := tlist.hashLocation[id]
+	return ok
+}
