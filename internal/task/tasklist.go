@@ -52,7 +52,7 @@ func (ts *TaskStateField) AddTodo() {
 	(*ts) |= TaskStateField(TaskStateUnfinished)
 }
 
-func (tlist TaskList) GetTasks(tsf TaskStateField) []TaskId {
+func (tlist TaskList) GetTasksByState(tsf TaskStateField) []TaskId {
 	var r []TaskId
 	for _, v := range tlist.taskSlice {
 		if int(v.Status)&int(tsf) != 0 {
@@ -60,4 +60,9 @@ func (tlist TaskList) GetTasks(tsf TaskStateField) []TaskId {
 		}
 	}
 	return r
+}
+
+func (tlist *TaskList) GetTask(id TaskId) *Task {
+	index := tlist.hashLocation[id]
+	return &tlist.taskSlice[index]
 }
