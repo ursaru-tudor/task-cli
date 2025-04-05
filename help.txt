@@ -1,0 +1,10 @@
+Usage: task-cli [VERB] [TARGET]
+Manage a to-do list in the terminal
+Verbs:
+ - help                         - Prints this text
+ - ver, version                 - Prints version information
+ - add [TITLE]                  - Adds a new entry with the given title
+ - update [ID] [TITLE]          - Changes the title of the selected entry
+ - delete [ID]                  - Removes the entry with the given title
+ - list [todo|in-progress|done] - Lists elements which are of the selected type. May use zero or more targets in one call
+ - info [ID]                    - See information about one specific task
