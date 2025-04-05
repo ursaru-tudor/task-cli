@@ -110,7 +110,6 @@ func (tlist *TaskList) cleanUpHashLocation() {
 }
 
 func (tlist *TaskList) UnmarshalJSON(data []byte) error {
-
 	err := json.Unmarshal(data, &tlist.TaskSlice)
 	if err != nil {
 		return err

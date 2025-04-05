@@ -14,16 +14,16 @@ func ReadFromFile(tl *task.TaskList, filename string) error {
 	jsonFile, err := os.Open("task.json")
 
 	if err != nil {
-		log.Println("Couldn't opened task.json to read")
+		log.Printf("Couldn't opened %s to read\n", filename)
 		return err
 	}
 
-	log.Println("Successfully opened task.json to read")
+	log.Printf("Successfully opened %s to read\n", filename)
 	defer jsonFile.Close()
 
 	bytes, _ := io.ReadAll(jsonFile)
 	if err := json.Unmarshal(bytes, &tl); err != nil {
-		log.Println("Failed unmarshalling task.json. Error: ", err)
+		log.Printf("Failed unmarshalling %s. %v\n", filename, err)
 		return err
 	}
 
@@ -34,24 +34,24 @@ func WriteToFile(tl task.TaskList, filename string) error {
 	jsonFile, err := os.Create("task.json")
 
 	if err != nil {
-		log.Println("Couldn't opened task.json to write")
+		log.Printf("Couldn't opened %s to write\n", filename)
 		return err
 	}
 
-	log.Println("Successfully opened task.json to write")
+	log.Printf("Successfully opened %s to write\n", filename)
 	defer jsonFile.Close()
 
 	jsonBytes, err := json.MarshalIndent(tl, "", "  ")
 
 	if err != nil {
-		log.Println("Failed marshalling task.json")
+		log.Printf("Failed marshalling %s\n", filename)
 		return err
 	}
 
 	n, err := jsonFile.Write(jsonBytes)
 
 	if err != nil || n != len(jsonBytes) {
-		log.Println("Failed writing to task.json")
+		log.Printf("Failed writing to %s\n", filename)
 		return err
 	}
 
@@ -59,11 +59,15 @@ func WriteToFile(tl task.TaskList, filename string) error {
 }
 
 func main() {
-	println("This is the start of a good project :)")
+	//log.SetOutput(io.Discard)
 
+	var savefile string = "test_task.json"
 	var myTasks task.TaskList
 
-	ReadFromFile(&myTasks, "task.json")
+	err := ReadFromFile(&myTasks, savefile)
+	if err != nil {
+		fmt.Printf("Loaded file from %s\n", savefile)
+	}
 
 	t := task.CreateTask("Clean around the house")
 	myTasks.AddTask(t)
@@ -74,5 +78,8 @@ func main() {
 	}
 	fmt.Printf("%s\n", jsonBytes)
 
-	WriteToFile(myTasks, "task.json")
+	err = WriteToFile(myTasks, "task.json")
+	if err != nil {
+		fmt.Printf("Failed to save data! Information may be lost. %v", err)
+	}
 }
