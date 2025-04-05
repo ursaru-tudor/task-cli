@@ -1,7 +1,6 @@
 package task
 
 import (
-	"encoding/json"
 	"sort"
 	"time"
 )
@@ -72,64 +71,4 @@ func CreateTask(tDesc string) Task {
 	t.UpdatedAt = time.Now()
 	t.Status = TaskStateUnfinished
 	return t
-}
-
-type TaskList struct {
-	TaskSlice    []Task
-	hashLocation map[TaskId]int
-}
-
-func (tlist *TaskList) AddTask(t Task) {
-	AssignTaskId(tlist.TaskSlice, &t)
-	tlist.TaskSlice = append(tlist.TaskSlice, t)
-
-	if tlist.hashLocation == nil {
-		tlist.hashLocation = make(map[TaskId]int)
-	}
-
-	tlist.hashLocation[t.Id] = len(tlist.TaskSlice) - 1
-}
-
-func (tlist *TaskList) DeleteTask(id TaskId) {
-	position := tlist.hashLocation[id]
-	delete(tlist.hashLocation, id)
-	tlist.TaskSlice[position] = tlist.TaskSlice[len(tlist.TaskSlice)-1]
-	tlist.TaskSlice = tlist.TaskSlice[:len(tlist.TaskSlice)-1]
-	tlist.hashLocation[tlist.TaskSlice[position].Id] = position
-}
-
-func (tlist TaskList) MarshalJSON() ([]byte, error) {
-	return json.Marshal(tlist.TaskSlice)
-}
-
-func (tlist *TaskList) cleanUpHashLocation() {
-	tlist.hashLocation = make(map[TaskId]int)
-	for pos, v := range tlist.TaskSlice {
-		tlist.hashLocation[v.Id] = pos
-	}
-}
-
-func (tlist *TaskList) UnmarshalJSON(data []byte) error {
-	err := json.Unmarshal(data, &tlist.TaskSlice)
-	if err != nil {
-		return err
-	}
-	tlist.cleanUpHashLocation()
-	return nil
-}
-
-type TaskStateField int
-
-func (ts *TaskStateField) AddTodo() {
-	(*ts) |= TaskStateField(TaskStateUnfinished)
-}
-
-func (tlist TaskList) GetTasks(tsf TaskStateField) []TaskId {
-	var r []TaskId
-	for _, v := range tlist.TaskSlice {
-		if int(v.Status)&int(tsf) != 0 {
-			r = append(r, v.Id)
-		}
-	}
-	return r
 }
