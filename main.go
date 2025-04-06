@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"io"
 	"log"
 	"os"
 
@@ -12,19 +12,11 @@ import (
 const default_logging_file string = "task-cli.log"
 const default_task_file string = "task.json"
 
+//go:embed help.txt
+var HelpString []byte
+
 func printHelp() {
-	helpFile, err := os.Open("help.txt")
-	if err != nil {
-		log.Fatalf("Failed to acquire help text\n")
-	}
-
-	str, err := io.ReadAll(helpFile)
-
-	if err != nil {
-		log.Fatalf("Failed to acquire help text\n")
-	}
-
-	fmt.Printf("%s\n", str)
+	fmt.Printf("%s\n", HelpString)
 }
 
 func main() {
