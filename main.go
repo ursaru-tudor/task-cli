@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -29,10 +28,8 @@ func printHelp() {
 }
 
 func main() {
-	var logging_file string
-	var task_file string
-	flag.StringVar(&logging_file, "log", default_logging_file, "The file used for outputting logging information")
-	flag.StringVar(&task_file, "file", default_task_file, "The JSON file containing task information")
+	var logging_file string = default_logging_file
+	var task_file string = default_task_file
 
 	logfile, err := os.Create(logging_file)
 	if err != nil {
