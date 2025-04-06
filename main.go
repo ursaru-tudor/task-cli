@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/ursaru-tudor/task-cli/internal/cli"
 )
@@ -29,10 +28,6 @@ func printHelp() {
 	fmt.Printf("%s\n", str)
 }
 
-func printVersion() {
-	fmt.Printf("TODO: Add something here\n")
-}
-
 func main() {
 	var logging_file string
 	var task_file string
@@ -50,10 +45,7 @@ func main() {
 		return
 	}
 
-	if strings.ToLower(os.Args[1]) == "ver" || strings.ToLower(os.Args[1]) == "version" {
-		printVersion()
-		return
-	} else if os.Args[1] == "help" {
+	if os.Args[1] == "help" {
 		printHelp()
 		return
 	}
