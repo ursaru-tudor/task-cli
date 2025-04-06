@@ -11,8 +11,8 @@ import (
 
 // Common error messages
 
-func ManageArgumentCount(desiredArgNumber int, verb string, title bool) bool {
-	if len(os.Args) > desiredArgNumber+1 {
+/*func ManageArgumentCount(desiredArgNumber int, verb string, title bool, accept_over_limit bool) bool {
+	if len(os.Args) > desiredArgNumber+1 && !accept_over_limit {
 		fmt.Printf("Too many arguments for verb %s.\n", verb)
 		if title {
 			fmt.Printf("If you want to input a title with spaces, make sure to insert \" before and after the text.")
@@ -20,14 +20,15 @@ func ManageArgumentCount(desiredArgNumber int, verb string, title bool) bool {
 		fmt.Printf("\n")
 		log.Printf("Error: Too many arguments for %s.\n", verb)
 		return false
-	}
-	if len(os.Args) < desiredArgNumber+1 {
+	} else if len(os.Args) > desiredArgNumber+1 && accept_over_limit {
+		//fmt.Printf("Multiple arguments for verb %s.\n", verb)
+	} else if len(os.Args) < desiredArgNumber+1 {
 		fmt.Printf("Too few arguments for verb %s. You must provide the title of the task as a third argument.\n", verb)
 		log.Printf("Error: Too few arguments for %s.\n", verb)
 		return false
 	}
 	return true
-}
+}*/
 
 func ManageInvalidId(verb, argument string) {
 	fmt.Printf("You have provided an invalid id (%s) to %s.\n", argument, verb)
@@ -73,57 +74,92 @@ func (a *Application) ParseList() {
 }
 
 func (a *Application) ParseAdd() {
-	if !ManageArgumentCount(2, "add", true) {
+	if len(os.Args) < 3 {
+		fmt.Printf("Too few arguments for verb add. You must provide at least one title for a new task.\n")
+		log.Printf("Error: Too few arguments for add.\n")
 		return
 	}
-	title := os.Args[2]
-	v := a.Add(title)
-	fmt.Printf("Task added successfully. Id: %v\n", v)
+
+	for _, s := range os.Args[3:] {
+		v := a.Add(s)
+		fmt.Printf("Task added successfully. Id: %v\n", v)
+	}
+
+	//title := os.Args[2]
+
 	a.Save()
 }
 
 func (a *Application) ParseInfo() {
-	if !ManageArgumentCount(2, "info", false) {
-		return
-	}
-	id, err := task.ExtractIdFromString(os.Args[2])
-
-	if err != nil || !a.myTasks.CheckId(id) {
-		ManageInvalidId("info", os.Args[2])
+	if len(os.Args) < 3 {
+		fmt.Printf("Too few arguments for info. You must provide at least one TaskId.\n")
+		log.Printf("Error: Too few arguments for info.\n")
 		return
 	}
 
-	fmt.Println(TaskVerboseDisplay(*a.myTasks.GetTask(id)))
+	var tid []task.TaskId
+
+	for _, s := range os.Args[2:] {
+		id, err := task.ExtractIdFromString(s)
+		if err != nil || !a.myTasks.CheckId(id) {
+			ManageInvalidId("info", s)
+			return
+		}
+		tid = append(tid, id)
+	}
+
+	for _, id := range tid {
+		fmt.Println(TaskVerboseDisplay(*a.myTasks.GetTask(id)))
+	}
 }
 
 func (a *Application) ParseDelete() {
-	if !ManageArgumentCount(2, "delete", false) {
-		return
-	}
-	id, err := task.ExtractIdFromString(os.Args[2])
-
-	if err != nil || !a.myTasks.CheckId(id) {
-		ManageInvalidId("delete", os.Args[2])
+	if len(os.Args) < 3 {
+		fmt.Printf("Too few arguments for verb delete. You must provide at least one TaskId.\n")
+		log.Printf("Error: Too few arguments for delete.\n")
 		return
 	}
 
-	a.Delete(id)
+	var tid []task.TaskId
+
+	for _, s := range os.Args[2:] {
+		id, err := task.ExtractIdFromString(s)
+		if err != nil || !a.myTasks.CheckId(id) {
+			ManageInvalidId("delete", s)
+			return
+		}
+		tid = append(tid, id)
+	}
+
+	for _, id := range tid {
+		a.Delete(id)
+	}
+
 	a.Save()
 }
 
 func (a *Application) ParseMark(ts task.TaskState) {
-	if !ManageArgumentCount(2, "mark", false) {
+	if len(os.Args) < 3 {
+		fmt.Printf("Too few arguments for verb class mark. You must provide at least one TaskId.\n")
+		log.Printf("Error: Too few arguments for mark.\n")
 		return
 	}
 
-	id, err := task.ExtractIdFromString(os.Args[2])
+	var tid []task.TaskId
 
-	if err != nil || !a.myTasks.CheckId(id) {
-		ManageInvalidId("mark", os.Args[2])
-		return
+	for _, s := range os.Args[2:] {
+		id, err := task.ExtractIdFromString(s)
+		if err != nil || !a.myTasks.CheckId(id) {
+			ManageInvalidId("mark", s)
+			return
+		}
+		tid = append(tid, id)
 	}
 
-	a.Mark(id, ts)
+	for _, id := range tid {
+		a.Mark(id, ts)
+	}
+
 	a.Save()
 }
 
