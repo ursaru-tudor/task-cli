@@ -23,18 +23,14 @@ func main() {
 	var logging_file string = default_logging_file
 	var task_file string = default_task_file
 
+	// All errors are saved in a log file
 	logfile, err := os.Create(logging_file)
 	if err != nil {
 		log.Fatalf("Could not open logging file %s\n", logging_file)
 	}
 	log.SetOutput(logfile)
 
-	if len(os.Args) < 2 {
-		printHelp()
-		return
-	}
-
-	if os.Args[1] == "help" {
+	if len(os.Args) < 2 || os.Args[1] == "help" {
 		printHelp()
 		return
 	}

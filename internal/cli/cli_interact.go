@@ -9,7 +9,7 @@ import (
 	"github.com/ursaru-tudor/task-cli/internal/task"
 )
 
-// Common error messages
+// Common error message
 
 func ManageInvalidId(verb, argument string) {
 	fmt.Printf("You have provided an invalid id (%s) to %s.\n", argument, verb)
@@ -18,9 +18,7 @@ func ManageInvalidId(verb, argument string) {
 
 // Parse arguments for each sub-command
 
-// This entire thing needs to be rewritten
 func (a *Application) ParseList() {
-	// Will need to implement code for specific listings
 	var tsf task.TaskStateField
 	if len(os.Args) < 3 {
 		tsf = task.TaskStateField(task.TaskStateActive | task.TaskStateFinished | task.TaskStateUnfinished)
