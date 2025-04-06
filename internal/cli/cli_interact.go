@@ -39,8 +39,37 @@ func ManageInvalidId(verb, argument string) {
 // This entire thing needs to be rewritten
 func (a *Application) ParseList() {
 	// Will need to implement code for specific listings
-	tsf := task.TaskStateField(task.TaskStateActive | task.TaskStateFinished | task.TaskStateUnfinished)
-	fmt.Print(a.StringTasksLong(a.myTasks.GetTasksByState(tsf)))
+	var tsf task.TaskStateField
+	if len(os.Args) < 3 {
+		tsf = task.TaskStateField(task.TaskStateActive | task.TaskStateFinished | task.TaskStateUnfinished)
+	} else {
+		for _, s := range os.Args[2:] {
+			ls := strings.ToLower(s)
+			switch ls {
+			case "todo":
+				tsf.AddState(task.TaskStateUnfinished)
+			case "to-do":
+				tsf.AddState(task.TaskStateUnfinished)
+			case "inprogress":
+				tsf.AddState(task.TaskStateActive)
+			case "in-progress":
+				tsf.AddState(task.TaskStateActive)
+			case "done":
+				tsf.AddState(task.TaskStateFinished)
+			default:
+				fmt.Printf("Invalid argument %s for list sumcommand\n", s)
+				log.Printf("Invalid argument %s for list sumcommand\n", s)
+				return
+			}
+		}
+	}
+	til := a.myTasks.GetTasksByState(tsf)
+	if len(til) == 0 {
+		fmt.Printf("No matching task found\n")
+		return
+	}
+
+	fmt.Print(a.StringTasksLong(til))
 }
 
 func (a *Application) ParseAdd() {
@@ -95,6 +124,7 @@ func (a *Application) ParseMark(ts task.TaskState) {
 	}
 
 	a.Mark(id, ts)
+	a.Save()
 }
 
 func (a *Application) ParseArguments() {
