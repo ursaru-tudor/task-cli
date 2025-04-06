@@ -11,7 +11,7 @@ type TaskList struct {
 	hashLocation map[TaskId]int
 }
 
-func (tlist *TaskList) AddTask(t Task) {
+func (tlist *TaskList) AddTask(t Task) TaskId {
 	AssignTaskId(tlist.taskSlice, &t)
 	tlist.taskSlice = append(tlist.taskSlice, t)
 
@@ -20,11 +20,18 @@ func (tlist *TaskList) AddTask(t Task) {
 	}
 
 	tlist.hashLocation[t.Id] = len(tlist.taskSlice) - 1
+	return t.Id
 }
 
 func (tlist *TaskList) DeleteTask(id TaskId) {
 	position := tlist.hashLocation[id]
 	delete(tlist.hashLocation, id)
+
+	if position == len(tlist.taskSlice)-1 {
+		tlist.taskSlice = tlist.taskSlice[:len(tlist.taskSlice)-1]
+		return
+	}
+
 	tlist.taskSlice[position] = tlist.taskSlice[len(tlist.taskSlice)-1]
 	tlist.taskSlice = tlist.taskSlice[:len(tlist.taskSlice)-1]
 	tlist.hashLocation[tlist.taskSlice[position].Id] = position

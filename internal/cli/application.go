@@ -20,9 +20,9 @@ func (a Application) Save() {
 
 // These functions assume already parsed input
 
-func (a *Application) Add(text string) {
+func (a *Application) Add(text string) task.TaskId {
 	t := task.CreateTask("Clean around the house")
-	a.myTasks.AddTask(t)
+	return a.myTasks.AddTask(t)
 }
 
 func (a *Application) Update(id task.TaskId, text string) {
@@ -32,4 +32,8 @@ func (a *Application) Update(id task.TaskId, text string) {
 
 func (a *Application) Delete(id task.TaskId) {
 	a.myTasks.DeleteTask(id)
+}
+
+func (a *Application) Mark(id task.TaskId, ts task.TaskState) {
+	a.myTasks.GetTask(id).Status = ts
 }

@@ -36,10 +36,6 @@ func ManageInvalidId(verb, argument string) {
 
 // Parse arguments for each sub-command
 
-func (a *Application) PrintList(tsf task.TaskStateField) {
-
-}
-
 // This entire thing needs to be rewritten
 func (a *Application) ParseList() {
 	// Will need to implement code for specific listings
@@ -52,8 +48,8 @@ func (a *Application) ParseAdd() {
 		return
 	}
 	title := os.Args[2]
-	a.Add(title)
-	fmt.Println("Successfuly created new task.")
+	v := a.Add(title)
+	fmt.Printf("Task added successfully. Id: %v\n", v)
 	a.Save()
 }
 
@@ -63,13 +59,7 @@ func (a *Application) ParseInfo() {
 	}
 	id, err := task.ExtractIdFromString(os.Args[2])
 
-	if err != nil {
-		fmt.Printf("Invalid TaskId format.\n")
-		log.Printf("Invalid TaskId format privded for info\n")
-		return
-	}
-
-	if !a.myTasks.CheckId(id) {
+	if err != nil || !a.myTasks.CheckId(id) {
 		ManageInvalidId("info", os.Args[2])
 		return
 	}
@@ -83,19 +73,28 @@ func (a *Application) ParseDelete() {
 	}
 	id, err := task.ExtractIdFromString(os.Args[2])
 
-	if err != nil {
-		fmt.Printf("Invalid TaskId format.\n")
-		log.Printf("Invalid TaskId format privded for delete\n")
-		return
-	}
-
-	if !a.myTasks.CheckId(id) {
+	if err != nil || !a.myTasks.CheckId(id) {
 		ManageInvalidId("delete", os.Args[2])
 		return
 	}
 
 	a.Delete(id)
 	a.Save()
+}
+
+func (a *Application) ParseMark(ts task.TaskState) {
+	if !ManageArgumentCount(2, "mark", false) {
+		return
+	}
+
+	id, err := task.ExtractIdFromString(os.Args[2])
+
+	if err != nil || !a.myTasks.CheckId(id) {
+		ManageInvalidId("mark", os.Args[2])
+		return
+	}
+
+	a.Mark(id, ts)
 }
 
 func (a *Application) ParseArguments() {
@@ -115,6 +114,10 @@ func (a *Application) ParseArguments() {
 		a.ParseInfo()
 	case "delete":
 		a.ParseDelete()
+	case "mark-in-progress":
+		a.ParseMark(task.TaskStateActive)
+	case "mark-done":
+		a.ParseMark(task.TaskStateFinished)
 	default:
 		fmt.Printf("You have included an invalid verb. For information on correct usage, check with the -h or --help flag\n")
 		log.Printf("Invalid verb provided\n")
