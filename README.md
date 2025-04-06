@@ -23,42 +23,42 @@ go build
 ### Add a task
 
 ```
-> task-cli add "Task name"
+task-cli add "Task name"
 ```
 
 **You can add mutliple tasks with a single call to task-cli by listing mutiple task names**
 
 ```
-> task-cli add "Task 1" "Task 2" ...
+task-cli add "Task 1" "Task 2" ...
 ```
 
 ### Update a task's name
 
 ```
-> task-cli update <task-id> "New task name"
+task-cli update <task-id> "New task name"
 ```
 
 ### Delete a task
 
 ```
-> task-cli delete <task-id>
+task-cli delete <task-id>
 ```
 
 
 **You can delete mutliple tasks with a single call to task-cli by listing multiple task-ids**
 
 ```
-> task-cli delete <task-id 1> <task-id 2> <task-id 3>
+task-cli delete <task-id 1> <task-id 2> <task-id 3>
 ```
 
 ### Marking a task "in-progress" or "done"
 
 ```
-> task-cli mark-in-progress <task-id>
+task-cli mark-in-progress <task-id>
 ```
 
 ```
-> task-cli mark-done <task-id>
+task-cli mark-done <task-id>
 ```
 
 **You can mark mutliple tasks with a single call to task-cli by listing multiple task-ids, similar to delete**
@@ -66,7 +66,7 @@ go build
 ### Listing tasks
 
 ```
-> task-cli list
+task-cli list
 ```
 
 Will list all tasks.
@@ -74,7 +74,7 @@ Will list all tasks.
 You can provide one or multiple of 'todo', 'in-progress', or 'done' to only see tasks with at specific stages. For example:
 
 ```
-> task-cli list todo in-progress
+task-cli list todo in-progress
 ```
 
 Will show all tasks that are not 'done'.
@@ -84,11 +84,11 @@ Will show all tasks that are not 'done'.
 This will show information about one or more tasks by providing their task-ids
 
 ```
-> task-cli info <task-id>
+task-cli info <task-id>
 ```
 
 Help can be accessed at any time by running
 
 ```
-> task-cli help
+task-cli help
 ```
