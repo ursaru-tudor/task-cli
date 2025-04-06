@@ -11,25 +11,6 @@ import (
 
 // Common error messages
 
-/*func ManageArgumentCount(desiredArgNumber int, verb string, title bool, accept_over_limit bool) bool {
-	if len(os.Args) > desiredArgNumber+1 && !accept_over_limit {
-		fmt.Printf("Too many arguments for verb %s.\n", verb)
-		if title {
-			fmt.Printf("If you want to input a title with spaces, make sure to insert \" before and after the text.")
-		}
-		fmt.Printf("\n")
-		log.Printf("Error: Too many arguments for %s.\n", verb)
-		return false
-	} else if len(os.Args) > desiredArgNumber+1 && accept_over_limit {
-		//fmt.Printf("Multiple arguments for verb %s.\n", verb)
-	} else if len(os.Args) < desiredArgNumber+1 {
-		fmt.Printf("Too few arguments for verb %s. You must provide the title of the task as a third argument.\n", verb)
-		log.Printf("Error: Too few arguments for %s.\n", verb)
-		return false
-	}
-	return true
-}*/
-
 func ManageInvalidId(verb, argument string) {
 	fmt.Printf("You have provided an invalid id (%s) to %s.\n", argument, verb)
 	log.Printf("Error: Invalid TaskId %s for %s.\n", argument, verb)
@@ -84,8 +65,6 @@ func (a *Application) ParseAdd() {
 		v := a.Add(s)
 		fmt.Printf("Task added successfully. Id: %v\n", v)
 	}
-
-	//title := os.Args[2]
 
 	a.Save()
 }
