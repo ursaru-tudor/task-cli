@@ -1,6 +1,10 @@
 package task
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"slices"
+	"strconv"
+)
 
 type TaskList struct {
 	taskSlice    []Task
@@ -48,8 +52,13 @@ func (tlist *TaskList) UnmarshalJSON(data []byte) error {
 
 type TaskStateField int
 
-func (ts *TaskStateField) AddTodo() {
-	(*ts) |= TaskStateField(TaskStateUnfinished)
+func (ts *TaskStateField) AddState(t TaskState) {
+	(*ts) |= TaskStateField(t)
+}
+
+func (tlist TaskList) Matches(id TaskId, tsf TaskStateField) bool {
+	state := tlist.GetTask(id).Status
+	return ((tsf) & TaskStateField(state)) != 0
 }
 
 func (tlist TaskList) GetTasksByState(tsf TaskStateField) []TaskId {
@@ -59,6 +68,7 @@ func (tlist TaskList) GetTasksByState(tsf TaskStateField) []TaskId {
 			r = append(r, v.Id)
 		}
 	}
+	slices.Sort(r)
 	return r
 }
 
@@ -70,4 +80,9 @@ func (tlist *TaskList) GetTask(id TaskId) *Task {
 func (tlist TaskList) CheckId(id TaskId) bool {
 	_, ok := tlist.hashLocation[id]
 	return ok
+}
+
+func ExtractIdFromString(str string) (TaskId, error) {
+	numId, err := strconv.Atoi(str)
+	return TaskId(numId), err
 }

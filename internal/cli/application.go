@@ -5,7 +5,6 @@ import "github.com/ursaru-tudor/task-cli/internal/task"
 type Application struct {
 	myTasks  task.TaskList
 	savefile string
-	Loaded   bool
 }
 
 func CreateApplication(filename string) Application {
@@ -15,7 +14,10 @@ func CreateApplication(filename string) Application {
 	return a
 }
 
-// Applicator functions
+func (a Application) Save() {
+	task.WriteToFile(a.myTasks, a.savefile)
+}
+
 // These functions assume already parsed input
 
 func (a *Application) Add(text string) {

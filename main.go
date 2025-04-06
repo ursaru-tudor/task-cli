@@ -30,7 +30,7 @@ func printHelp() {
 }
 
 func printVersion() {
-	fmt.Printf("This app is currently not released!")
+	fmt.Printf("TODO: Add something here\n")
 }
 
 func main() {
@@ -52,6 +52,7 @@ func main() {
 
 	if strings.ToLower(os.Args[1]) == "ver" || strings.ToLower(os.Args[1]) == "version" {
 		printVersion()
+		return
 	} else if os.Args[1] == "help" {
 		printHelp()
 		return
