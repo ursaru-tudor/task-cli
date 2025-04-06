@@ -162,7 +162,7 @@ func (a *Application) ParseArguments() {
 	case "mark-done":
 		a.ParseMark(task.TaskStateFinished)
 	default:
-		fmt.Printf("You have included an invalid verb. For information on correct usage, check with the -h or --help flag\n")
+		fmt.Printf("You have included an invalid verb. For information on correct usage, check with 'task-cli help'\n")
 		log.Printf("Invalid verb provided\n")
 	}
 }
