@@ -71,7 +71,7 @@ task-cli list
 
 Will list all tasks.
 
-You can provide one or multiple of 'todo', 'in-progress', or 'done' to only see tasks with at specific stages. For example:
+You can provide one or multiple of 'todo', 'in-progress', or 'done' to only see tasks with at stages. For example:
 
 ```
 task-cli list todo in-progress
