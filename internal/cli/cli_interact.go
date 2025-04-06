@@ -59,7 +59,7 @@ func (a *Application) ParseAdd() {
 		return
 	}
 
-	for _, s := range os.Args[3:] {
+	for _, s := range os.Args[2:] {
 		v := a.Add(s)
 		fmt.Printf("Task added successfully. Id: %v\n", v)
 	}
