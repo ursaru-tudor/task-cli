@@ -21,7 +21,7 @@ func (a Application) Save() {
 // These functions assume already parsed input
 
 func (a *Application) Add(text string) task.TaskId {
-	t := task.CreateTask("Clean around the house")
+	t := task.CreateTask(text)
 	return a.myTasks.AddTask(t)
 }
 
