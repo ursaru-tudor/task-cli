@@ -24,7 +24,7 @@ func main() {
 	var task_file string = default_task_file
 
 	// All errors are saved in a log file
-	logfile, err := os.Create(logging_file)
+	logfile, err := os.OpenFile(logging_file, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatalf("Could not open logging file %s\n", logging_file)
 	}

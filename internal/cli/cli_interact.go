@@ -59,7 +59,7 @@ func (a *Application) ParseAdd() {
 		return
 	}
 
-	for _, s := range os.Args[3:] {
+	for _, s := range os.Args[2:] {
 		v := a.Add(s)
 		fmt.Printf("Task added successfully. Id: %v\n", v)
 	}
@@ -162,7 +162,7 @@ func (a *Application) ParseArguments() {
 	case "mark-done":
 		a.ParseMark(task.TaskStateFinished)
 	default:
-		fmt.Printf("You have included an invalid verb. For information on correct usage, check with the -h or --help flag\n")
+		fmt.Printf("You have included an invalid verb. For information on correct usage, check with 'task-cli help'\n")
 		log.Printf("Invalid verb provided\n")
 	}
 }
