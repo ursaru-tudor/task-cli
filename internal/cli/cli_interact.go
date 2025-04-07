@@ -120,7 +120,7 @@ func (a *Application) ParseDelete() {
 
 	if total_delete {
 		fmt.Printf("Deleting all entries...\n")
-		a.DeleteAll()
+		tid = a.myTasks.GetTasksByState(task.AllTaskStates)
 	}
 
 	for _, id := range tid {
