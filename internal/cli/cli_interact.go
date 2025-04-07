@@ -99,11 +99,9 @@ func (a *Application) ParseDelete() {
 
 	var tid []task.TaskId
 
-	var total_delete bool
-
 	if os.Args[2] == "all" && len(os.Args) == 3 {
-		fmt.Printf("If you want to use the target 'all', provide it as the only argument to the subcommand")
-		total_delete = true
+		fmt.Printf("Deleting all entries...\n")
+		tid = a.myTasks.GetTasksByState(task.AllTaskStates)
 	} else {
 		for _, s := range os.Args[2:] {
 			if s == "all" && len(os.Args) > 3 {
@@ -116,11 +114,6 @@ func (a *Application) ParseDelete() {
 			}
 			tid = append(tid, id)
 		}
-	}
-
-	if total_delete {
-		fmt.Printf("Deleting all entries...\n")
-		tid = a.myTasks.GetTasksByState(task.AllTaskStates)
 	}
 
 	for _, id := range tid {
@@ -139,13 +132,21 @@ func (a *Application) ParseMark(ts task.TaskState) {
 
 	var tid []task.TaskId
 
-	for _, s := range os.Args[2:] {
-		id, err := task.ExtractIdFromString(s)
-		if err != nil || !a.myTasks.CheckId(id) {
-			ManageInvalidId("mark", s)
-			return
+	if os.Args[2] == "all" && len(os.Args) == 3 {
+		fmt.Printf("Marking all as %s\n", ts.String())
+		tid = a.myTasks.GetTasksByState(task.AllTaskStates ^ task.TaskStateField(ts))
+	} else {
+		for _, s := range os.Args[2:] {
+			if s == "all" && len(os.Args) > 3 {
+				fmt.Printf("If you want to use the target 'all', provide it as the only argument to the subcommand")
+			}
+			id, err := task.ExtractIdFromString(s)
+			if err != nil || !a.myTasks.CheckId(id) {
+				ManageInvalidId("mark", s)
+				return
+			}
+			tid = append(tid, id)
 		}
-		tid = append(tid, id)
 	}
 
 	for _, id := range tid {
