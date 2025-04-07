@@ -38,6 +38,8 @@ func (tlist *TaskList) DeleteTask(id TaskId) {
 
 type TaskStateField int
 
+const AllTaskStates TaskStateField = TaskStateField(TaskStateActive | TaskStateFinished | TaskStateUnfinished)
+
 func (ts *TaskStateField) AddState(t TaskState) {
 	(*ts) |= TaskStateField(t)
 }

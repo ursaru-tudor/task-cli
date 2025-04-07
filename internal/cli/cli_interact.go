@@ -21,7 +21,7 @@ func ManageInvalidId(verb, argument string) {
 func (a *Application) ParseList() {
 	var tsf task.TaskStateField
 	if len(os.Args) < 3 {
-		tsf = task.TaskStateField(task.TaskStateActive | task.TaskStateFinished | task.TaskStateUnfinished)
+		tsf = task.TaskStateField(task.AllTaskStates)
 	} else {
 		for _, s := range os.Args[2:] {
 			ls := strings.ToLower(s)
@@ -99,13 +99,28 @@ func (a *Application) ParseDelete() {
 
 	var tid []task.TaskId
 
-	for _, s := range os.Args[2:] {
-		id, err := task.ExtractIdFromString(s)
-		if err != nil || !a.myTasks.CheckId(id) {
-			ManageInvalidId("delete", s)
-			return
+	var total_delete bool
+
+	if os.Args[2] == "all" && len(os.Args) == 3 {
+		fmt.Printf("If you want to use the target 'all', provide it as the only argument to the subcommand")
+		total_delete = true
+	} else {
+		for _, s := range os.Args[2:] {
+			if s == "all" && len(os.Args) > 3 {
+				fmt.Printf("If you want to use the target 'all', provide it as the only argument to the subcommand")
+			}
+			id, err := task.ExtractIdFromString(s)
+			if err != nil || !a.myTasks.CheckId(id) {
+				ManageInvalidId("delete", s)
+				return
+			}
+			tid = append(tid, id)
 		}
-		tid = append(tid, id)
+	}
+
+	if total_delete {
+		fmt.Printf("Deleting all entries...\n")
+		a.DeleteAll()
 	}
 
 	for _, id := range tid {

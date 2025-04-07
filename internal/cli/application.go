@@ -37,3 +37,10 @@ func (a *Application) Delete(id task.TaskId) {
 func (a *Application) Mark(id task.TaskId, ts task.TaskState) {
 	a.myTasks.GetTask(id).Status = ts
 }
+
+func (a *Application) DeleteAll() {
+	tid := a.myTasks.GetTasksByState(task.AllTaskStates)
+	for _, id := range tid {
+		a.Delete(id)
+	}
+}
