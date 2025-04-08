@@ -13,10 +13,22 @@ const (
 	TaskStateFinished   TaskState = 1 << iota
 )
 
+var taskStateJSON_marshal = map[TaskState]string{
+	TaskStateUnfinished: "todo",
+	TaskStateActive:     "in-progress",
+	TaskStateFinished:   "done",
+}
+
+var taskStateJSON_unmarshal = map[string]TaskState{
+	"todo":        TaskStateUnfinished,
+	"in-progress": TaskStateActive,
+	"done":        TaskStateFinished,
+}
+
 var taskStateName = map[TaskState]string{
-	TaskStateUnfinished: "Unfinished",
-	TaskStateActive:     "In Progress",
-	TaskStateFinished:   "Finished",
+	TaskStateUnfinished: "unfinished",
+	TaskStateActive:     "in progress",
+	TaskStateFinished:   "finished",
 }
 
 func (ts TaskState) String() string {
@@ -26,11 +38,11 @@ func (ts TaskState) String() string {
 type TaskId int
 
 type Task struct {
-	Id          TaskId
-	Description string
-	Status      TaskState
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	Id          TaskId    `json:"id"`
+	Description string    `json:"description"`
+	Status      TaskState `json:"status"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 func (t *Task) UpdateText(newText string) {

@@ -9,6 +9,24 @@ import (
 	"os"
 )
 
+func (ts *TaskState) MarshalJSON() ([]byte, error) {
+	return json.Marshal(taskStateJSON_marshal[*ts])
+}
+
+func (ts *TaskState) UnmarshalJSON(data []byte) error {
+	if data[0] != '"' || data[len(data)-1] != '"' {
+		return fmt.Errorf("improper TaskState %s in JSON", data)
+	}
+	data = data[1 : len(data)-1]
+	_, ok := taskStateJSON_unmarshal[string(data)]
+	if !ok {
+		return fmt.Errorf("improper TaskState %s in JSON", data)
+	}
+	*ts = taskStateJSON_unmarshal[string(data)]
+
+	return nil
+}
+
 func (tlist TaskList) MarshalJSON() ([]byte, error) {
 	return json.Marshal(tlist.taskSlice)
 }
