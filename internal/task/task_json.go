@@ -58,7 +58,7 @@ func (tlist *TaskList) UnmarshalJSON(data []byte) error {
 }
 
 func ReadFromFile(tl *TaskList, filename string) error {
-	jsonFile, err := os.Open("task.json")
+	jsonFile, err := os.Open(filename)
 
 	if err != nil {
 		log.Printf("Couldn't opened %s to read\n", filename)
@@ -78,7 +78,7 @@ func ReadFromFile(tl *TaskList, filename string) error {
 }
 
 func WriteToFile(tl TaskList, filename string) error {
-	jsonFile, err := os.Create("task.json")
+	jsonFile, err := os.Create(filename)
 
 	if err != nil {
 		log.Printf("Couldn't opened %s to write\n", filename)
